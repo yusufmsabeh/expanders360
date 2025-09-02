@@ -1,0 +1,259 @@
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
+
+export class InitSchema1756724826671 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.createTable(
+      new Table({
+        name: 'clients',
+        columns: [
+          {
+            name: 'id',
+            type: 'int',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
+            name: 'company_name',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'contact_email',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'password',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+        ],
+      }),
+    );
+    await queryRunner.createTable(
+      new Table({
+        name: 'admins',
+        columns: [
+          {
+            name: 'id',
+            type: 'int',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
+            name: 'name',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'email',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'password',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+        ],
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'projects',
+        columns: [
+          {
+            name: 'id',
+            type: 'int',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
+            name: 'title',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'services_needed',
+            type: 'json',
+            isNullable: false,
+          },
+          {
+            name: 'country',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'budget',
+            type: 'float',
+            isNullable: false,
+          },
+          {
+            name: 'status',
+            type: 'enum',
+            enum: ['active', 'inactive'],
+            default: `'active'`,
+          },
+          {
+            name: 'client_id',
+            type: 'int',
+            isNullable: false,
+          },
+        ],
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'vendors',
+        columns: [
+          {
+            name: 'id',
+            type: 'int',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
+            name: 'name',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
+            name: 'countries_supported',
+            type: 'json',
+            isNullable: false,
+          },
+          {
+            name: 'services_offered',
+            type: 'json',
+            isNullable: false,
+          },
+          {
+            name: 'rating',
+            type: 'float',
+            isNullable: true,
+          },
+          {
+            name: 'response_sla_hours',
+            type: 'int',
+            isNullable: false,
+          },
+        ],
+      }),
+    );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'matches',
+        columns: [
+          {
+            name: 'id',
+            type: 'int',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'increment',
+          },
+          {
+            name: 'score',
+            type: 'float',
+            isNullable: false,
+          },
+          {
+            name: 'project_id',
+            type: 'int',
+            isNullable: false,
+          },
+          {
+            name: 'vendor_id',
+            type: 'int',
+            isNullable: false,
+          },
+        ],
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'projects',
+      new TableForeignKey({
+        columnNames: ['client_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'clients',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'matches',
+      new TableForeignKey({
+        columnNames: ['project_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'projects',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'matches',
+      new TableForeignKey({
+        columnNames: ['vendor_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'vendors',
+        onDelete: 'CASCADE',
+      }),
+    );
+  }
+
+  async down(queryRunner: QueryRunner): Promise<any> {
+    await queryRunner.dropForeignKey(
+      'projects',
+      new TableForeignKey({
+        columnNames: ['client_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'clients',
+        onDelete: 'CASCADE',
+      }),
+    );
+    await queryRunner.dropForeignKey(
+      'matches',
+      new TableForeignKey({
+        columnNames: ['project_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'projects',
+        onDelete: 'CASCADE',
+      }),
+    );
+    await queryRunner.dropForeignKey(
+      'matches',
+      new TableForeignKey({
+        columnNames: ['vendor_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'vendors',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.dropTable('vendors');
+    await queryRunner.dropTable('projects');
+    await queryRunner.dropTable('admins');
+    await queryRunner.dropTable('clients');
+  }
+}

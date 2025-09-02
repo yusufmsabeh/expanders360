@@ -1,4 +1,8 @@
 import { DataSource } from 'typeorm';
+import { Client } from '../client/client.entity';
+import { Admin } from '../admin/admin.entity';
+
+console.log(__dirname);
 
 export const databaseProviders = [
   {
@@ -10,9 +14,10 @@ export const databaseProviders = [
         port: 3306,
         username: 'root',
         password: 'root',
-        database: 'test',
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: true,
+        database: 'sys',
+        entities: [Client, Admin],
+        migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        synchronize: false,
       });
 
       return dataSource.initialize();
