@@ -1,21 +1,19 @@
 import { DataSource } from 'typeorm';
-import { Client } from '../client/client.entity';
-import { Admin } from '../admin/admin.entity';
-
-console.log(__dirname);
+import envConfig from '../config/env.config';
+import { User } from '../user/user.entity';
 
 export const databaseProviders = [
   {
     provide: 'DATA_SOURCE',
     useFactory: async () => {
       const dataSource = new DataSource({
-        type: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        username: 'root',
-        password: 'root',
-        database: 'sys',
-        entities: [Client, Admin],
+        type: (envConfig().database.type ?? 'mysql') as 'mysql',
+        host: envConfig().database.host,
+        port: parseInt(envConfig().database.port ?? '3306'),
+        username: envConfig().database.username,
+        password: envConfig().database.password,
+        database: envConfig().database.database,
+        entities: [User],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
         synchronize: false,
       });

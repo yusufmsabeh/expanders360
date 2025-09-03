@@ -9,7 +9,7 @@ export class InitSchema1756724826671 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'clients',
+        name: 'users',
         columns: [
           {
             name: 'id',
@@ -22,12 +22,13 @@ export class InitSchema1756724826671 implements MigrationInterface {
             name: 'company_name',
             type: 'varchar',
             length: '255',
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'contact_email',
             type: 'varchar',
             length: '255',
+            isUnique: true,
             isNullable: false,
           },
           {
@@ -35,6 +36,12 @@ export class InitSchema1756724826671 implements MigrationInterface {
             type: 'varchar',
             length: '255',
             isNullable: false,
+          },
+          {
+            name: 'role',
+            type: 'enum',
+            enum: ['client', 'admin'],
+            default: `'client'`,
           },
         ],
       }),
@@ -112,7 +119,7 @@ export class InitSchema1756724826671 implements MigrationInterface {
             default: `'active'`,
           },
           {
-            name: 'client_id',
+            name: 'user_id',
             type: 'int',
             isNullable: false,
           },
@@ -194,9 +201,9 @@ export class InitSchema1756724826671 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'projects',
       new TableForeignKey({
-        columnNames: ['client_id'],
+        columnNames: ['user_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'clients',
+        referencedTableName: 'users',
         onDelete: 'CASCADE',
       }),
     );
@@ -226,9 +233,9 @@ export class InitSchema1756724826671 implements MigrationInterface {
     await queryRunner.dropForeignKey(
       'projects',
       new TableForeignKey({
-        columnNames: ['client_id'],
+        columnNames: ['user_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'clients',
+        referencedTableName: 'users',
         onDelete: 'CASCADE',
       }),
     );
@@ -254,6 +261,6 @@ export class InitSchema1756724826671 implements MigrationInterface {
     await queryRunner.dropTable('vendors');
     await queryRunner.dropTable('projects');
     await queryRunner.dropTable('admins');
-    await queryRunner.dropTable('clients');
+    await queryRunner.dropTable('users');
   }
 }
