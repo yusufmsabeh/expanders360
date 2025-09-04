@@ -1,6 +1,6 @@
 enum RoleEnum {
-  client,
-  admin,
+  client = 'client',
+  admin = 'admin',
 }
 
 export default RoleEnum;

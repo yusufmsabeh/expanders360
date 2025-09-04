@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import envConfig from '../config/env.config';
 import { User } from '../user/user.entity';
+import { Project } from '../project/project.entity';
 
 export const databaseProviders = [
   {
@@ -13,7 +14,7 @@ export const databaseProviders = [
         username: envConfig().database.username,
         password: envConfig().database.password,
         database: envConfig().database.database,
-        entities: [User],
+        entities: [User, Project],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
         synchronize: false,
       });

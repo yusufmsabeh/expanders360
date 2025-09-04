@@ -8,6 +8,7 @@ import { jwtConstants } from './constants';
 import { ProjectModule } from './project/project.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
+import { Project } from './project/project.entity';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { User } from './user/user.entity';
         username: configService.get<string>('database.username'),
         password: configService.get<string>('database.password'),
         database: configService.get<string>('database.database'),
-        entities: [User],
+        entities: [User, Project],
         migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
         synchronize: false,
       }),
@@ -33,7 +34,7 @@ import { User } from './user/user.entity';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '30d' },
     }),
     UserModule,
     AuthModule,
