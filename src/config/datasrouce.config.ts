@@ -1,7 +1,6 @@
 import { DataSource } from 'typeorm';
 import process from 'node:process';
-import { User } from '../user/user.entity';
-import { Project } from '../project/project.entity';
+import entities from './entity.config';
 
 const dataSource = new DataSource({
   type: (process.env.DATABASE_TYPE ?? 'mysql') as 'mysql',
@@ -10,7 +9,7 @@ const dataSource = new DataSource({
   username: process.env.DATABASE_USERNAME ?? 'root',
   password: process.env.DATABASE_PASSWORD ?? 'root',
   database: process.env.DATABASE_NAME ?? 'expanders360',
-  entities: [User, Project],
+  entities: [...entities],
   migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
   synchronize: false,
 });

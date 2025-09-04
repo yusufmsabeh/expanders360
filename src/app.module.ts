@@ -9,6 +9,8 @@ import { ProjectModule } from './project/project.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 import { Project } from './project/project.entity';
+import { VendorModule } from './vendor/vendor.module';
+import entities from './config/entity.config';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { Project } from './project/project.entity';
         username: configService.get<string>('database.username'),
         password: configService.get<string>('database.password'),
         database: configService.get<string>('database.database'),
-        entities: [User, Project],
+        entities: [...entities],
         migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
         synchronize: false,
       }),
@@ -39,6 +41,7 @@ import { Project } from './project/project.entity';
     UserModule,
     AuthModule,
     ProjectModule,
+    VendorModule,
   ],
   controllers: [],
   providers: [],
