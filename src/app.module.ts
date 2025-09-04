@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 import { Project } from './project/project.entity';
 import { VendorModule } from './vendor/vendor.module';
+import { MatchModule } from './match/match.module';
 import entities from './config/entity.config';
 
 @Module({
@@ -42,6 +43,7 @@ import entities from './config/entity.config';
     AuthModule,
     ProjectModule,
     VendorModule,
+    MatchModule,
   ],
   controllers: [],
   providers: [],

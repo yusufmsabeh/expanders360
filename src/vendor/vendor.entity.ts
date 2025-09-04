@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Match } from '../match/match.entity';
 
 @Entity('vendors')
 export class Vendor {
@@ -25,4 +26,7 @@ export class Vendor {
 
   @Column({ name: 'response_sla_hours', nullable: false })
   responseSLAHours: number;
+
+  @OneToMany(() => Match, (match) => match.vendor)
+  matches: Match[];
 }

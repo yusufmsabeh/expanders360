@@ -195,6 +195,12 @@ export class InitSchema1756724826671 implements MigrationInterface {
             isNullable: false,
           },
         ],
+        uniques: [
+          {
+            name: 'unique_match_per_project_vendor',
+            columnNames: ['project_id', 'vendor_id'],
+          },
+        ],
       }),
     );
 

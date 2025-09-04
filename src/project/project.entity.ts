@@ -4,9 +4,13 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  RelationOptions,
+  OneToOne,
+  OneToMany,
 } from 'typeorm';
 import StatusEnum from './status.enum';
 import { User } from '../user/user.entity';
+import { Match } from '../match/match.entity';
 
 @Entity('projects')
 export class Project {
@@ -31,4 +35,7 @@ export class Project {
   @ManyToOne(() => User, (user: User) => user.projects)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany(() => Match, (match) => match.project)
+  matches: Match[];
 }
