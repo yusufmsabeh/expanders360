@@ -10,7 +10,9 @@ import { UserModule } from './user/user.module';
 import { VendorModule } from './vendor/vendor.module';
 import { MatchModule } from './match/match.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { DocumentModule } from './document/document.module';
 import entities from './config/entity.config';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import entities from './config/entity.config';
       isGlobal: true,
       load: [envConfig],
     }),
+    MongooseModule.forRoot(envConfig().mongodb.uri ?? 'test'),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -44,6 +47,7 @@ import entities from './config/entity.config';
     VendorModule,
     MatchModule,
     AnalyticsModule,
+    DocumentModule,
   ],
   controllers: [],
   providers: [],

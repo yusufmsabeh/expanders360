@@ -9,4 +9,7 @@ export default () => ({
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
   },
+  mongodb: {
+    uri: process.env.MONGODB_URI,
+  },
 });
