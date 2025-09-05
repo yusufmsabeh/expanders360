@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Project } from '../project/project.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vendor } from '../vendor/vendor.entity';
-import { Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { Match } from './match.entity';
 
 @Injectable()
@@ -47,5 +47,74 @@ export class MatchService {
     return this.matchRepository.findBy({
       project: { id: projectId },
     });
+  }
+
+  async getTopVendorsByCountry(): Promise<
+    {
+      country: string;
+      topVendors: {
+        id: string;
+        name: string;
+        avgMatchScore: number;
+      }[];
+    }[]
+  > {
+    const allVendors = await this.vendorRepository.find();
+    const uniqueCountries = new Set<string>();
+    allVendors.forEach((vendor) => {
+      if (Array.isArray(vendor.countriesSupported)) {
+        vendor.countriesSupported.forEach((country) =>
+          uniqueCountries.add(country),
+        );
+      }
+    });
+
+    const result: {
+      country: string;
+      topVendors: {
+        id: string;
+        name: string;
+        avgMatchScore: number;
+      }[];
+    }[] = [];
+
+    for (const country of uniqueCountries) {
+      const topVendors = await this.vendorRepository
+        .createQueryBuilder('vendor')
+        .innerJoin('vendor.matches', 'match')
+        .where(
+          'JSON_CONTAINS(vendor.countriesSupported, JSON_ARRAY(:country))',
+          { country },
+        )
+        .andWhere('match.createdAt >= :date', {
+          date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        })
+        .groupBy('vendor.id')
+        .select([
+          'vendor.id AS id',
+          'vendor.name AS name',
+          'AVG(match.score) AS avgMatchScore',
+        ])
+        .orderBy('avgMatchScore', 'DESC')
+        .limit(3)
+        .getRawMany();
+
+      type RawVendorResult = {
+        id: string;
+        name: string;
+        avgMatchScore: string;
+      };
+
+      result.push({
+        country,
+        topVendors: (topVendors as RawVendorResult[]).map((vendor) => ({
+          id: vendor.id,
+          name: vendor.name,
+          avgMatchScore: parseFloat(vendor.avgMatchScore),
+        })),
+      });
+    }
+
+    return result;
   }
 }

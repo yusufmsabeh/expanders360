@@ -46,38 +46,6 @@ export class InitSchema1756724826671 implements MigrationInterface {
         ],
       }),
     );
-    await queryRunner.createTable(
-      new Table({
-        name: 'admins',
-        columns: [
-          {
-            name: 'id',
-            type: 'int',
-            isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
-          },
-          {
-            name: 'name',
-            type: 'varchar',
-            length: '255',
-            isNullable: false,
-          },
-          {
-            name: 'email',
-            type: 'varchar',
-            length: '255',
-            isNullable: false,
-          },
-          {
-            name: 'password',
-            type: 'varchar',
-            length: '255',
-            isNullable: false,
-          },
-        ],
-      }),
-    );
 
     await queryRunner.createTable(
       new Table({
