@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { Document } from './document.entity';
 import { User } from '../user/user.entity';
 import { ProjectService } from '../project/project.service';
+import { GetDocumentsDto } from './DTO/get-documents.dto';
 
 @Injectable()
 export class DocumentService {
@@ -23,5 +24,24 @@ export class DocumentService {
       throw new NotFoundException('Project not found');
     }
     return await this.documentModel.create(body);
+  }
+
+  async getDocuments(getDocumentsDto: GetDocumentsDto) {
+    const findQuery = {};
+    if (getDocumentsDto.projectId) {
+      findQuery['projectId'] = getDocumentsDto.projectId;
+    }
+    if (getDocumentsDto.tag) {
+      findQuery['tags'] = { $in: [getDocumentsDto.tag] };
+    }
+
+    if (getDocumentsDto.text) {
+      const regex = new RegExp(getDocumentsDto.text, 'i');
+      findQuery['$or'] = [
+        { title: { $regex: regex } },
+        { content: { $regex: regex } },
+      ];
+    }
+    return this.documentModel.find(findQuery).exec();
   }
 }
