@@ -8,7 +8,7 @@ import { ProjectService } from '../project/project.service';
 import { DocumentService } from '../document/document.service';
 import { VendorService } from '../vendor/vendor.service';
 import { GetTopVendorsByCountryDto } from './DTO/get-top-vendors-by-country.dto';
-import { NotFoundError } from 'rxjs';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class MatchService {
@@ -17,6 +17,7 @@ export class MatchService {
     private projectService: ProjectService,
     private documentService: DocumentService,
     private vendorService: VendorService,
+    private emailService: EmailService,
   ) {}
 
   async createMatch(projectId: number) {
@@ -38,6 +39,10 @@ export class MatchService {
         servicesOverlap.length * 2 + vendor.rating + vendor.responseSLAHours;
       await this.upsertMatch(score, project, vendor);
     }
+    const vendorEmails: string[] = vendors.map((vendor) => {
+      return vendor.email;
+    });
+    this.emailService.sendMatchNotificationEmail(vendorEmails, project.title);
   }
 
   async getMatches(projectId: number) {

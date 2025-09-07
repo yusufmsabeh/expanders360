@@ -13,6 +13,9 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { DocumentModule } from './document/document.module';
 import entities from './config/entity.config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AzureModule } from './azure/azure.module';
+import { AzureConfigService } from './azure/azure-config.service';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -48,8 +51,10 @@ import { MongooseModule } from '@nestjs/mongoose';
     MatchModule,
     AnalyticsModule,
     DocumentModule,
+    AzureModule,
+    EmailModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [AzureConfigService],
 })
 export class AppModule {}

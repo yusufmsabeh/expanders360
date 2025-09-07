@@ -12,4 +12,8 @@ export default () => ({
   mongodb: {
     uri: process.env.MONGODB_URI,
   },
+  azure: {
+    emailString: process.env.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING,
+    email: process.env.AZURE_EMAIL,
+  },
 });

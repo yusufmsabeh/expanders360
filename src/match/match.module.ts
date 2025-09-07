@@ -9,6 +9,7 @@ import { UserModule } from '../user/user.module';
 import { ProjectModule } from '../project/project.module';
 import { DocumentModule } from '../document/document.module';
 import { VendorModule } from '../vendor/vendor.module';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { VendorModule } from '../vendor/vendor.module';
     ProjectModule,
     DocumentModule,
     VendorModule,
+    EmailModule,
   ],
   providers: [MatchService],
   controllers: [MatchController],

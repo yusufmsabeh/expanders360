@@ -113,6 +113,12 @@ export class InitSchema1756724826671 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: 'email',
+            type: 'varchar',
+            length: '255',
+            isNullable: false,
+          },
+          {
             name: 'countries_supported',
             type: 'json',
             isNullable: false,

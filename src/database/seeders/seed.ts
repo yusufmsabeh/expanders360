@@ -66,6 +66,7 @@ const seedDatabase = async () => {
     for (let i = 0; i < 10; i++) {
       const vendor = new Vendor();
       vendor.name = `Vendor ${i + 1}`;
+      vendor.email = 'yussef.msabeh@gmail.com';
       vendor.rating = Math.floor(Math.random() * 5) + 1;
       vendor.responseSLAHours = Math.floor(Math.random() * 24) + 1;
       vendor.countriesSupported = vendorCountries

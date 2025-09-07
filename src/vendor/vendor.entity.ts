@@ -9,6 +9,9 @@ export class Vendor {
   @Column()
   name: string;
 
+  @Column()
+  email: string;
+
   @Column({
     name: 'countries_supported',
     type: 'json',
