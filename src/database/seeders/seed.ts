@@ -2,7 +2,7 @@ import { User } from '../../user/user.entity';
 import { Project } from '../../project/project.entity';
 import { Vendor } from '../../vendor/vendor.entity';
 import { Match } from '../../match/match.entity';
-import RoleEnum from '../../user/role.enum';
+import RoleEnum from '../../user/ENUM/role.enum';
 import datasrouceConfig from '../../config/datasrouce.config';
 
 const AppDataSource = datasrouceConfig;

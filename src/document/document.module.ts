@@ -17,5 +17,6 @@ import { UserModule } from '../user/user.module';
 
   providers: [DocumentService],
   controllers: [DocumentController],
+  exports: [DocumentService],
 })
 export class DocumentModule {}

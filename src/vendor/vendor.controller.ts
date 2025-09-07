@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { Roles } from '../auth/roles.decorator';
-import { AuthGuard } from '../auth/auth.guard';
-import RoleEnum from '../user/role.enum';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { AuthGuard } from '../auth/gurd/auth.guard';
+import RoleEnum from '../user/ENUM/role.enum';
 import CreateVendorDto from './DTO/create-vendor.dto';
 import { VendorService } from './vendor.service';
 import httpResponseUtil from '../util/httpResponse.util';

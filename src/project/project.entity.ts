@@ -8,7 +8,7 @@ import {
   OneToOne,
   OneToMany,
 } from 'typeorm';
-import StatusEnum from './status.enum';
+import StatusEnum from './ENUM/status.enum';
 import { User } from '../user/user.entity';
 import { Match } from '../match/match.entity';
 

@@ -25,7 +25,6 @@ export class DocumentService {
     }
     return await this.documentModel.create(body);
   }
-
   async getDocuments(getDocumentsDto: GetDocumentsDto) {
     const findQuery = {};
     if (getDocumentsDto.projectId) {
@@ -43,5 +42,8 @@ export class DocumentService {
       ];
     }
     return this.documentModel.find(findQuery).exec();
+  }
+  async countProjectDocuments(projectId: number) {
+    return this.documentModel.countDocuments({ projectId: projectId }).exec();
   }
 }

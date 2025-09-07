@@ -9,7 +9,8 @@ import {
 import { AuthService } from './auth.service';
 import SignupDto from './DTO/signup.dto';
 import SignInDto from './DTO/signin.dto';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from './gurd/auth.guard';
+import HttpResponseUtil from '../util/httpResponse.util';
 
 @Controller('/auth')
 export class AuthController {
@@ -17,16 +18,25 @@ export class AuthController {
 
   @Post('/signin')
   async signInClient(@Body() body: SignInDto) {
-    return await this.authService.signIn(body);
+    return HttpResponseUtil(
+      200,
+      'Sign In successfully',
+      await this.authService.signIn(body),
+    );
   }
 
   @Post('/signup')
   async signUpClient(@Body() body: SignupDto) {
-    return await this.authService.signUp(body);
+    await this.authService.signUp(body);
+    return HttpResponseUtil(200, 'Sing up successfully');
   }
   @Get('/profile')
   @UseGuards(AuthGuard)
   async getProfile(@Request() req) {
-    return await this.authService.getProfile(req.user.id);
+    return HttpResponseUtil(
+      200,
+      'Profile',
+      await this.authService.getProfile(req['user'].id),
+    );
   }
 }

@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import RoleEnum from './role.enum';
+import RoleEnum from './ENUM/role.enum';
 import { Project } from '../project/project.entity';
 
 @Entity('users')

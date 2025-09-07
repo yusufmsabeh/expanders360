@@ -1,27 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Project } from '../project/project.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vendor } from '../vendor/vendor.entity';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Match } from './match.entity';
+import { ProjectService } from '../project/project.service';
+import { DocumentService } from '../document/document.service';
+import { VendorService } from '../vendor/vendor.service';
+import { GetTopVendorsByCountryDto } from './DTO/get-top-vendors-by-country.dto';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class MatchService {
   constructor(
-    @InjectRepository(Vendor) private vendorRepository: Repository<Vendor>,
     @InjectRepository(Match) private matchRepository: Repository<Match>,
-    @InjectRepository(Project)
-    private projectRepository: Repository<Project>,
+    private projectService: ProjectService,
+    private documentService: DocumentService,
+    private vendorService: VendorService,
   ) {}
 
   async createMatch(projectId: number) {
-    const project: Project | null = await this.projectRepository.findOne({
-      where: { id: projectId },
-    });
+    const project: Project | null =
+      await this.projectService.findProjectById(projectId);
     if (!project) {
-      throw new Error('Project not found');
+      throw new NotFoundException('Project not found');
     }
-    let vendors: Vendor[] = await this.vendorRepository.find();
+    let vendors: Vendor[] = await this.vendorService.getVendors();
     vendors = vendors.filter((vendor) =>
       vendor.countriesSupported.includes(project.country),
     );
@@ -32,14 +36,7 @@ export class MatchService {
       );
       const score: number =
         servicesOverlap.length * 2 + vendor.rating + vendor.responseSLAHours;
-      await this.matchRepository.upsert(
-        {
-          score,
-          project,
-          vendor,
-        },
-        ['project', 'vendor'],
-      );
+      await this.upsertMatch(score, project, vendor);
     }
   }
 
@@ -49,17 +46,8 @@ export class MatchService {
     });
   }
 
-  async getTopVendorsByCountry(): Promise<
-    {
-      country: string;
-      topVendors: {
-        id: string;
-        name: string;
-        avgMatchScore: number;
-      }[];
-    }[]
-  > {
-    const allVendors = await this.vendorRepository.find();
+  async getTopVendorsByCountry(): Promise<GetTopVendorsByCountryDto[]> {
+    const allVendors = await this.vendorService.getVendors();
     const uniqueCountries = new Set<string>();
     allVendors.forEach((vendor) => {
       if (Array.isArray(vendor.countriesSupported)) {
@@ -69,52 +57,57 @@ export class MatchService {
       }
     });
 
-    const result: {
-      country: string;
-      topVendors: {
-        id: string;
-        name: string;
-        avgMatchScore: number;
-      }[];
-    }[] = [];
+    const result: GetTopVendorsByCountryDto[] = [];
 
     for (const country of uniqueCountries) {
-      const topVendors = await this.vendorRepository
-        .createQueryBuilder('vendor')
-        .innerJoin('vendor.matches', 'match')
-        .where(
-          'JSON_CONTAINS(vendor.countriesSupported, JSON_ARRAY(:country))',
-          { country },
-        )
-        .andWhere('match.createdAt >= :date', {
-          date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-        })
-        .groupBy('vendor.id')
-        .select([
-          'vendor.id AS id',
-          'vendor.name AS name',
-          'AVG(match.score) AS avgMatchScore',
-        ])
-        .orderBy('avgMatchScore', 'DESC')
-        .limit(3)
-        .getRawMany();
-
-      type RawVendorResult = {
-        id: string;
-        name: string;
-        avgMatchScore: string;
-      };
+      const topVendors = await this.vendorService.getTop3Vendors(country);
+      const projectsInCountry =
+        await this.projectService.getProjectsInCountry(country);
+      let documentCount = 0;
+      for (const project of projectsInCountry) {
+        documentCount += await this.documentService.countProjectDocuments(
+          project.id,
+        );
+      }
 
       result.push({
         country,
-        topVendors: (topVendors as RawVendorResult[]).map((vendor) => ({
+        topVendors: topVendors.map((vendor) => ({
           id: vendor.id,
           name: vendor.name,
-          avgMatchScore: parseFloat(vendor.avgMatchScore),
+          avgMatchScore: vendor.avgMatchScore,
         })),
+        documentsCount: documentCount,
       });
     }
 
     return result;
+  }
+
+  async upsertMatch(
+    score: number,
+    project: Project,
+    vendor: Vendor,
+  ): Promise<void> {
+    const existingMatch = await this.matchRepository.findOne({
+      where: {
+        project: { id: project.id },
+        vendor: { id: vendor.id },
+      },
+    });
+
+    if (existingMatch) {
+      existingMatch.score = score;
+      await this.matchRepository.save(existingMatch);
+      return;
+    } else {
+      const newMatch = this.matchRepository.create({
+        score,
+        project,
+        vendor,
+      });
+      await this.matchRepository.save(newMatch);
+      return;
+    }
   }
 }

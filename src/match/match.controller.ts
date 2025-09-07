@@ -1,10 +1,10 @@
 import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { MatchService } from './match.service';
 import httpResponseUtil from '../util/httpResponse.util';
-import { RolesGuard } from '../auth/role.guard';
-import { AuthGuard } from '../auth/auth.guard';
-import RoleEnum from '../user/role.enum';
-import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/gurd/role.guard';
+import { AuthGuard } from '../auth/gurd/auth.guard';
+import RoleEnum from '../user/ENUM/role.enum';
+import { Roles } from '../auth/decorator/roles.decorator';
 
 @Controller('/match')
 export class MatchController {

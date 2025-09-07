@@ -6,9 +6,18 @@ import { Vendor } from '../vendor/vendor.entity';
 import { MatchController } from './match.controller';
 import { Project } from '../project/project.entity';
 import { UserModule } from '../user/user.module';
+import { ProjectModule } from '../project/project.module';
+import { DocumentModule } from '../document/document.module';
+import { VendorModule } from '../vendor/vendor.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Vendor, Match, Project]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([Vendor, Match, Project]),
+    UserModule,
+    ProjectModule,
+    DocumentModule,
+    VendorModule,
+  ],
   providers: [MatchService],
   controllers: [MatchController],
   exports: [MatchService],

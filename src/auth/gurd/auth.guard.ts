@@ -5,9 +5,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from '../constants';
+import { jwtConstants } from '../../constants';
 import { Request } from 'express';
-import { UserService } from '../user/user.service';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -30,7 +30,6 @@ export class AuthGuard implements CanActivate {
       const user = await this.userService.findById(payload.id);
       if (!user) throw new UnauthorizedException();
       request['user'] = user;
-      request.user = user;
     } catch (e) {
       console.log(e);
       throw new UnauthorizedException();
