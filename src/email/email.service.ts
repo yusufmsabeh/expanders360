@@ -7,6 +7,7 @@ export class EmailService {
   constructor(private readonly azureConfigService: AzureConfigService) {}
 
   async sendMatchNotificationEmail(emails: string[], projectName) {
+    if (emails.length === 0) return;
     const newEmail: { address: string }[] = emails.map((email) => ({
       address: email,
     }));

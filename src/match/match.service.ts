@@ -31,18 +31,21 @@ export class MatchService {
       vendor.countriesSupported.includes(project.country),
     );
     const servicesNeeded = project.servicesNeeded;
+    const vendorsWithNewMatches: string[] = [];
+
     for (const vendor of vendors) {
       const servicesOverlap = vendor.servicesOffered.filter((service) =>
         servicesNeeded.includes(service),
       );
       const score: number =
         servicesOverlap.length * 2 + vendor.rating + vendor.responseSLAHours;
-      await this.upsertMatch(score, project, vendor);
+      if (await this.upsertMatch(score, project, vendor))
+        vendorsWithNewMatches.push(vendor.email);
     }
-    const vendorEmails: string[] = vendors.map((vendor) => {
-      return vendor.email;
-    });
-    this.emailService.sendMatchNotificationEmail(vendorEmails, project.title);
+    this.emailService.sendMatchNotificationEmail(
+      vendorsWithNewMatches,
+      project.title,
+    );
   }
 
   async getMatches(projectId: number) {
@@ -93,7 +96,7 @@ export class MatchService {
     score: number,
     project: Project,
     vendor: Vendor,
-  ): Promise<void> {
+  ): Promise<Vendor | null> {
     const existingMatch = await this.matchRepository.findOne({
       where: {
         project: { id: project.id },
@@ -104,7 +107,7 @@ export class MatchService {
     if (existingMatch) {
       existingMatch.score = score;
       await this.matchRepository.save(existingMatch);
-      return;
+      return null;
     } else {
       const newMatch = this.matchRepository.create({
         score,
@@ -112,7 +115,8 @@ export class MatchService {
         vendor,
       });
       await this.matchRepository.save(newMatch);
-      return;
+
+      return vendor;
     }
   }
 }
