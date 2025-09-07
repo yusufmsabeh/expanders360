@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Project } from './project.entity';
 import { User } from '../user/user.entity';
 import RoleEnum from '../user/ENUM/role.enum';
+import StatusEnum from './ENUM/status.enum';
 
 @Injectable()
 export class ProjectService {
@@ -38,5 +39,14 @@ export class ProjectService {
     return await this.projectRepository.findOne({
       where: { id: id },
     });
+  }
+
+  async getActiveProjectsHasMatches(): Promise<Project[]> {
+    const projects = await this.projectRepository
+      .createQueryBuilder('project')
+      .innerJoin('project.matches', 'match') // The innerJoin requires a corresponding match.
+      .where('project.status = :status', { status: StatusEnum.active })
+      .getMany();
+    return projects;
   }
 }

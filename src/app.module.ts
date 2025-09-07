@@ -16,6 +16,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AzureModule } from './azure/azure.module';
 import { AzureConfigService } from './azure/azure-config.service';
 import { EmailModule } from './email/email.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { RebuildMatchCron } from './cron/rebuild-match.cron';
 
 @Module({
   imports: [
@@ -44,6 +46,7 @@ import { EmailModule } from './email/email.module';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '30d' },
     }),
+    ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
     ProjectModule,
@@ -55,6 +58,6 @@ import { EmailModule } from './email/email.module';
     EmailModule,
   ],
   controllers: [],
-  providers: [AzureConfigService],
+  providers: [AzureConfigService, RebuildMatchCron],
 })
 export class AppModule {}

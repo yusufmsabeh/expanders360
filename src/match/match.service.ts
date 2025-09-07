@@ -119,4 +119,12 @@ export class MatchService {
       return vendor;
     }
   }
+
+  async rebuildActiveProject() {
+    const activeProjects: Project[] =
+      await this.projectService.getActiveProjectsHasMatches();
+    for (const project of activeProjects) {
+      await this.createMatch(project.id);
+    }
+  }
 }
