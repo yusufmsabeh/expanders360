@@ -18,6 +18,7 @@ import { AzureConfigService } from './azure/azure-config.service';
 import { EmailModule } from './email/email.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RebuildMatchCron } from './cron/rebuild-match.cron';
+import { VendorSlaMonitorCron } from './cron/vendor-sla-monitor.cron';
 
 @Module({
   imports: [
@@ -58,6 +59,6 @@ import { RebuildMatchCron } from './cron/rebuild-match.cron';
     EmailModule,
   ],
   controllers: [],
-  providers: [AzureConfigService, RebuildMatchCron],
+  providers: [AzureConfigService, RebuildMatchCron, VendorSlaMonitorCron],
 })
 export class AppModule {}

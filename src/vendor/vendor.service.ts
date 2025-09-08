@@ -39,4 +39,8 @@ export class VendorService {
       .limit(3)
       .getRawMany();
   }
+
+  async updateVendor(vendor: Vendor) {
+    await this.vendorRepository.save(vendor);
+  }
 }

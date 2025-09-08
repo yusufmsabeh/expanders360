@@ -23,7 +23,7 @@ export class Match {
   score: number;
 
   @Column({ name: 'status', enum: StatusEnum })
-  role: StatusEnum;
+  status: StatusEnum;
 
   @CreateDateColumn({
     name: 'created_at',

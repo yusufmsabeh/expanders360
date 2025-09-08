@@ -9,6 +9,7 @@ import { DocumentService } from '../document/document.service';
 import { VendorService } from '../vendor/vendor.service';
 import { GetTopVendorsByCountryDto } from './DTO/get-top-vendors-by-country.dto';
 import { EmailService } from '../email/email.service';
+import StatusEnum from './ENUM/status.enum';
 
 @Injectable()
 export class MatchService {
@@ -126,5 +127,14 @@ export class MatchService {
     for (const project of activeProjects) {
       await this.createMatch(project.id);
     }
+  }
+
+  async getPendingMatches() {
+    return await this.matchRepository.find({
+      where: {
+        status: StatusEnum.pending,
+      },
+      relations: ['vendor'],
+    });
   }
 }

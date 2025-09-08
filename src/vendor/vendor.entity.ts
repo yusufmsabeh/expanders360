@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Match } from '../match/match.entity';
+import StatusEnum from './ENUM/status.enum';
 
 @Entity('vendors')
 export class Vendor {
@@ -23,6 +24,12 @@ export class Vendor {
     type: 'json',
   })
   servicesOffered: string[];
+
+  @Column({
+    name: 'status',
+    enum: StatusEnum,
+  })
+  status: StatusEnum;
 
   @Column({ name: 'rating', nullable: true })
   rating: number;
