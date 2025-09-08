@@ -159,6 +159,12 @@ export class InitSchema1756724826671 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: 'status',
+            type: 'enum',
+            enum: ['answered', 'pending'],
+            default: `'pending'`,
+          },
+          {
             name: 'project_id',
             type: 'int',
             isNullable: false,

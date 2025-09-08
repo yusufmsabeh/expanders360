@@ -10,6 +10,8 @@ import {
 } from 'typeorm';
 import { Project } from '../project/project.entity';
 import { Vendor } from '../vendor/vendor.entity';
+import RoleEnum from '../user/ENUM/role.enum';
+import StatusEnum from './ENUM/status.enum';
 
 @Entity('matches')
 @Unique(['project', 'vendor'])
@@ -19,6 +21,9 @@ export class Match {
 
   @Column({ name: 'score', nullable: false })
   score: number;
+
+  @Column({ name: 'status', enum: StatusEnum })
+  role: StatusEnum;
 
   @CreateDateColumn({
     name: 'created_at',
