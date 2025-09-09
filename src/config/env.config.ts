@@ -12,6 +12,7 @@ export default () => ({
   mongodb: {
     username: process.env.MONGO_ROOT_USERNAME ?? 'root',
     password: process.env.MONGO_ROOT_PASSWORD ?? 'root',
+    host: process.env.MONGO_ROOT_HOST,
     port: process.env.MONGO_ROOT_PORT ?? 27017,
   },
   azure: {
