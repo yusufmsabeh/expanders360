@@ -18,4 +18,8 @@ export default () => ({
     emailString: process.env.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING,
     email: process.env.AZURE_EMAIL,
   },
+  server: {
+    host: process.env.SERVER_HOST ?? 'localhost',
+    port: process.env.SERVER_PORT ?? 3000,
+  },
 });
