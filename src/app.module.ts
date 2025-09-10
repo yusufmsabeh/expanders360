@@ -26,7 +26,10 @@ import { VendorSlaMonitorCron } from './cron/vendor-sla-monitor.cron';
       isGlobal: true,
       load: [envConfig],
     }),
-    MongooseModule.forRoot(envConfig().mongodb.uri),
+    MongooseModule.forRoot(
+      envConfig().mongodb.uri ??
+        `mongodb://${envConfig().mongodb.username}:${envConfig().mongodb.password}@${envConfig().mongodb.host}:${envConfig().mongodb.port}/`,
+    ),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
