@@ -12,6 +12,12 @@ const dataSource = new DataSource({
   entities: [...entities],
   migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
   synchronize: false,
+  ssl: true,
+  extra: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
 });
 
 export default dataSource;
