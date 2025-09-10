@@ -50,8 +50,11 @@ export class MatchService {
   }
 
   async getMatches(projectId: number) {
-    return this.matchRepository.findBy({
-      project: { id: projectId },
+    return this.matchRepository.find({
+      where: {
+        project: { id: projectId },
+      },
+      relations: ['project', 'vendor'],
     });
   }
 

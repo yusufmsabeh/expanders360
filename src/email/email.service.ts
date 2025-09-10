@@ -71,7 +71,10 @@ export class EmailService {
         to: newEmail,
       },
     };
-
-    await this.azureConfigService.getEmailClient().beginSend(emailMessage);
+    try {
+      await this.azureConfigService.getEmailClient().beginSend(emailMessage);
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
