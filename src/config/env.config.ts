@@ -10,7 +10,7 @@ export default () => ({
     database: process.env.MYSQL_DATABASE,
   },
   mongodb: {
-    uri: process.env.MONGODB_URI ?? 'none',
+    uri: process.env.MONGO_URI ?? 'none',
     username: process.env.MONGO_ROOT_USERNAME ?? 'root',
     password: process.env.MONGO_ROOT_PASSWORD ?? 'root',
     host: process.env.MONGO_ROOT_HOST,
